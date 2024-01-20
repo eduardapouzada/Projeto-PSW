@@ -47,3 +47,22 @@ def novo_flashcard(request):
             request, constants.SUCCESS, 'Flashcard criado com sucesso'
         )
         return redirect('/flashcard/novo_flashcard')
+    
+    
+    
+    
+    if request.method == 'GET':
+        categorias = Categoria.objects.all()
+        dificuldades = Flashcard.DIFICULDADE_CHOICES
+        flashcards = Flashcard.objects.filter(user=request.user)
+
+        return render(
+            request,
+            'novo_flashcard.html',
+            {
+                'categorias': categorias,
+                'dificuldades': dificuldades,
+                'flashcards': flashcards,
+            }
+            
+        )
