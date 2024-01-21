@@ -15,12 +15,19 @@ def novo_flashcard(request):
         flashcards = Flashcard.objects.filter(user = request.user)
 
         categoria_filtrar = request.GET.get('categoria')
-        dificuldade_filtrar = request.GET.get('dificuldade_filtrar')
+        dificuldade_filtrar = request.GET.get('dificuldade')
+        
+        if categoria_filtrar:
+            flashcards = flashcards.filter(categoria__id=categoria_filtrar)
+            
+        if dificuldade_filtrar:
+            flashcards = flashcards.filter(dificuldade =dificuldade_filtrar) 
         
         return render(request,'novo_flashcard.html',{'categorias': categorias,
                                                      'dificuldades': dificuldades,
                                                      'flashcards': flashcards,})
-    
+
+           
     
     elif request.method == 'POST':
         pergunta = request.POST.get('pergunta')
@@ -44,3 +51,10 @@ def novo_flashcard(request):
         messages.add_message(request,constants.SUCCESS,'Flashcard cadastrado com sucesso.',)
         return redirect('/flashcard/novo_flashcard')
     
+def deletar_flashcard(request, id):
+    flashcard = Flashcard.objects.get(id=id)
+    flashcard.delete()
+    messages.add_message(
+        request, constants.SUCCESS, 'Flashcard deletado com sucesso!'
+    )
+    return redirect('/flashcard/novo_flashcard')
